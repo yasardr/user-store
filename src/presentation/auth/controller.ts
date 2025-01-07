@@ -35,11 +35,15 @@ export class AuthController {
 
         this.authService.loginUser(loginUserDto!)
             .then((user) => res.json(user))
-            .catch(error => this.handleError(error, res));;
+            .catch(error => this.handleError(error, res));
     }
 
 
     validateEmail = (req: Request, res: Response) => {
-        res.json('validateEmail')
+        const { token } = req.params;
+        
+        this.authService.validateEmail(token)
+            .then(() => res.json('Email validated'))
+            .catch(error => this.handleError(error, res));
     }
 }
