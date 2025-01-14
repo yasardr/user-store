@@ -1,15 +1,15 @@
 import { Response, Request } from 'express';
-import { CreateCategoryDto, CustomError, PaginationDto } from '../../domain';
-import { CategoryService } from '../services';
+import { CreateProductDto, CustomError, PaginationDto } from '../../domain';
+import { ProductService } from '../services';
 
 
 
 
-export class CategoryController {
+export class ProductController {
 
     // DI
     constructor(
-        private readonly categoryService: CategoryService,
+        private readonly productService: ProductService,
     ){}
 
     private handleError = (error: unknown, res: Response) => {
@@ -21,22 +21,25 @@ export class CategoryController {
         return res.status(500).json({error: 'Interval server error'});
     }
 
-    createCategory = (req: Request, res: Response) => {
-        const [error, createCategoryDto] = CreateCategoryDto.create(req.body);
+    createProduct= (req: Request, res: Response) => {
+        const [error, createProductDto] = CreateProductDto.create({
+            ...req.body,
+            user: req.body.user.id,
+        });
         if (error) return res.status(400).json({error});
 
-        this.categoryService.createCategory(createCategoryDto!, req.body.user)
-            .then(category => res.status(201).json(category))
+        this.productService.createProduct(createProductDto!)
+            .then(product => res.status(201).json(product))
             .catch(error => this.handleError(error, res))
     }
 
-    getCategories = (req: Request, res: Response) => {
+    getProducts = (req: Request, res: Response) => {
         const { page = 1, limit = 10 } = req.query;
         const [ error, paginationDto ] = PaginationDto.create(+page, +limit);
         if (error) res.status(400).json({error});
 
-        this.categoryService.getCategories(paginationDto!)
-            .then(categories => res.json(categories))
+        this.productService.getProducts(paginationDto!)
+            .then(products => res.json(products))
             .catch(error => this.handleError(error, res));
     }
 
