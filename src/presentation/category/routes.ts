@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { CategoryController } from './controller';
-import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { CategoryService } from '../services';
+import { AuthMiddleware } from '../middlewares';
 
 
 
